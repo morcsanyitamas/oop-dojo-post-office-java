@@ -1,0 +1,56 @@
+@startuml
+!define RECTANGLE class
+
+title Post Office - Class Diagram
+
+package com.codecool.model {
+    abstract class PostedItem {
+        - postedDate: LocalDate {final}
+        - recipientAddress: String {final}
+        + PostedItem(recipientAddress: String, postedDate: LocalDate)
+        + getPostedDate(): LocalDate
+        + {abstract} getPrice(): double
+    }
+
+    class Letter {
+        + Letter(recipientAddress: String, postedDate: LocalDate)
+        + getPrice(): double
+    }
+
+    abstract class Box {
+        # weightInGrams: int
+        + Box(recipientAddress: String, postedDate: LocalDate, weightInGrams: int)
+        + {abstract} getPrice(): double
+    }
+
+    class BigBox {
+        + BigBox(recipientAddress: String, postedDate: LocalDate, weightInGrams: int)
+        + getPrice(): double
+    }
+
+    class SmallBox {
+        + SmallBox(recipientAddress: String, postedDate: LocalDate, weightInGrams: int)
+        + getPrice(): double
+    }
+}
+
+package com.codecool.service {
+    class PostOffice {
+        - postedItems: List<PostedItem> {final}
+        + PostOffice()
+        + addPostedItem(item: PostedItem): void
+        + getAllPostedItemsOnDate(postedDate: LocalDate): List<PostedItem>
+        + getIncomeFromPostedItems(itemType: Class<? extends PostedItem>): double
+    }
+}
+
+' Inheritance relationships
+PostedItem <|-- Letter
+PostedItem <|-- Box
+Box <|-- BigBox
+Box <|-- SmallBox
+
+' Aggregation relationship (not composition)
+PostOffice o-- PostedItem : contains 0..*
+
+@enduml
